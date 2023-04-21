@@ -39,27 +39,6 @@ class WC_Errandlr_Delivery_API
         return $this->send_request('estimate', $params, 'get');
     }
 
-    public function get_lat_lng($address)
-    {
-        $address = rawurlencode($address);
-        $coord   = get_transient('Errandlr_delivery_geocode_' . $address);
-
-        if (empty($coord)) {
-            $url  = 'http://nominatim.openstreetmap.org/?format=json&addressdetails=1&q=' . $address . '&limit=1';
-            $json = wp_remote_get($url);
-            if (200 === (int) wp_remote_retrieve_response_code($json)) {
-                $body = wp_remote_retrieve_body($json);
-                $json = json_decode($body, true);
-            }
-
-            $coord['lat']  = $json[0]['lat'];
-            $coord['long'] = $json[0]['lon'];
-            set_transient('Errandlr_delivery_geocode_' . $address, $coord, DAY_IN_SECONDS * 90);
-        }
-
-        return $coord;
-    }
-
     /**
      * Send HTTP Request
      * @param string $endpoint API request path
@@ -95,15 +74,20 @@ class WC_Errandlr_Delivery_API
         } else {
             $res = wp_remote_retrieve_body($req);
             if (null !== ($json = json_decode($res, true))) {
-                error_log(__METHOD__ . ' for ' . $uri . ' ' . print_r(compact('arg_array', 'json'), true));
 
                 if (isset($json['code']) == 400) {
-                    throw new Exception("There was an issue connecting to Errandlr delivery. Reason: {$json['message']}.");
+                    error_log(__METHOD__ . ' for ' . $uri . ' ' . print_r(compact('arg_array', 'json'), true));
+                    // throw new Exception("There was an issue connecting to Errandlr delivery. Reason: {$json['message']}.");
+                    //add notice
+                    wc_add_notice("There was an issue connecting to Errandlr delivery. Reason: {$json['message']}.", 'error');
                 }
 
                 return $json;
             } else { // Un-decipherable message
-                throw new Exception(__('There was an issue connecting to Errandlr delivery. Try again later.'));
+                // throw new Exception(__('There was an issue connecting to Errandlr delivery. Try again later.'));
+
+                //add notice
+                wc_add_notice(__('There was an issue connecting to Errandlr delivery. Try again later.'), 'error');
             }
         }
 
@@ -130,12 +114,16 @@ class WC_Errandlr_Delivery_API
             $res = wp_remote_retrieve_body($response);
             if (null !== ($json = json_decode($res, true))) {
                 if (isset($json['code']) == 400) {
-                    throw new Exception("There was an issue connecting to Errandlr delivery. Reason: {$json['message']}.");
+                    //throw new Exception("There was an issue connecting to Errandlr delivery. Reason: {$json['message']}.");
+                    //add notice
+                    wc_add_notice(__('There was an issue connecting to Errandlr delivery. Reason: ' . $json['message']), 'error');
                 }
-                file_put_contents(__DIR__ . '/log2.txt', print_r($json, true));
                 return $json;
             } else { // Un-decipherable message
-                throw new Exception(__('There was an issue connecting to Errandlr delivery. Try again later.'));
+                // throw new Exception(__('There was an issue connecting to Errandlr delivery. Try again later.'));
+                //add notice
+                wc_add_notice(__('There was an issue connecting to Errandlr delivery. Try again later.'), 'error');
+                return false;
             }
         }
     }

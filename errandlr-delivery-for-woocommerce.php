@@ -2,14 +2,14 @@
 
 /**
  * Plugin Name: Errandlr Delivery for WooCommerce
- * Plugin URI: https://errandlr.com/
- * Author: Plugin Author Name
+ * Plugin URI: https://wordpress.org/plugins/errandlr-delivery-for-woocommerce/
+ * Author: Errandlr
  * Author URI: https://errandlr.com/
  * Description: Errandlr Delivery for WooCommerce
- * Version: 0.1.0
- * License: 0.1.0
+ * Version: 1.0.7
+ * License: 1.0.7
  * License URL: http://www.gnu.org/licenses/gpl-2.0.txt
- * text-domain: errandlr
+ * text-domain: errandlr-delivery-for-woocommerce
  */
 if (!defined('WPINC')) {
     die('security by preventing any direct access to your plugin file');
@@ -300,3 +300,12 @@ class WC_Errandlr_Delivery_Loader
 
 // fire it up!
 WC_Errandlr_Delivery_Loader::instance();
+
+//check if function_exists WC_Errandlr_Delivery sanitize_array
+if (!function_exists('WC_Errandlr_Delivery_sanitize_array')) {
+    function errandlr_sanitize_array($array)
+    {
+        $new = new WC_Errandlr_Delivery;
+        return $new->sanitize_array($array);
+    }
+}

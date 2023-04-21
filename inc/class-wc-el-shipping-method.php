@@ -130,6 +130,34 @@ class WC_Errandlr_Delivery_Shipping_Method extends WC_Shipping_Method
                 'description' =>     __('Used to coordinate pickup if the Errandlr rider is outside attempting delivery. Must be a valid phone number'),
                 'default'     =>     __('')
             ),
+            //add discount amount
+            'discount_amount' => array(
+                'title'       =>     __('Discount Amount for premium'),
+                'type'        =>     'number',
+                'description' =>     __('Add discount amount to shipping cost for premium delivery. <br> <b>Note: Adding a discount amount takes precedence over fixed amount.</b>'),
+                'default'     =>     __('0')
+            ),
+            //add discount for economy
+            'discount_amount_economy' => array(
+                'title'       =>     __('Discount Amount for economy'),
+                'type'        =>     'number',
+                'description' =>     __('Add discount amount to shipping cost for economy delivery. <br> <b>Note: Adding a discount amount takes precedence over fixed amount.</b>'),
+                'default'     =>     __('0')
+            ),
+            //fixed amount
+            'fixed_amount' => array(
+                'title'       =>     __('Fixed Amount for premium'),
+                'type'        =>     'number',
+                'description' =>     'Add fixed amount to shipping cost. <br> <b>Note: Adding a fixed shipping cost takes precedence over discount amount.</b>',
+                'default'     =>     __('0')
+            ),
+            //fixed amount
+            'fixed_amount_economy' => array(
+                'title'       =>     __('Fixed Amount for economy'),
+                'type'        =>     'number',
+                'description' =>     'Add fixed amount to shipping cost. <br> <b>Note: Adding a fixed shipping cost takes precedence over discount amount.</b>',
+                'default'     =>     __('0')
+            ),
         );
     }
 
@@ -142,7 +170,7 @@ class WC_Errandlr_Delivery_Shipping_Method extends WC_Shipping_Method
 
 
     /**
-     * Calculate shipping by sending destination/items to Shipwire and parsing returned rates
+     * Calculate shipping by sending destination/items to errandlr and parsing returned rates
      *
      * @since 1.0
      * @param array $package
@@ -153,11 +181,33 @@ class WC_Errandlr_Delivery_Shipping_Method extends WC_Shipping_Method
             return;
         }
 
-        // country required for all shipments
+        // // country required for all shipments
         if ($package['destination']['country'] !== 'NG') {
             //add notice
             wc_add_notice(__('Errandlr delivery is only available for Nigeria'), 'notice');
             return;
+        }
+
+        //check if session is started
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        //if session is set
+        if (isset($_SESSION['errandlr_shipping_info'])) {
+            //get session
+            $errandlr_shipping_info = $_SESSION['errandlr_shipping_info'];
+            // file_put_contents(__DIR__ . '/loggin.txt', print_r($errandlr_shipping_info, true));
+        } else {
+            $errandlr_shipping_info = [];
+        }
+
+        //if session is set
+        if (isset($_SESSION['errandlr_shipping_cost'])) {
+            //get session
+            $errandlr_cost = $_SESSION['errandlr_shipping_cost'];
+        } else {
+            $errandlr_cost = 0;
         }
 
         $delivery_country_code = $package['destination']['country'];
@@ -176,46 +226,48 @@ class WC_Errandlr_Delivery_Shipping_Method extends WC_Shipping_Method
             return;
         }
 
-        $name = $this->get_option('name');
-        $email = $this->get_option('email');
-        $pickup_country = $this->get_option('pickup_country');
-        $pickup_state = $this->get_option('pickup_state');
-        $pickup_city = $this->get_option('pickup_city');
-        $pickup_address = $this->get_option('pickup_address');
-        $phone = $this->get_option('phone');
+        //check if $errandlr_cost is available
+        if (!empty($errandlr_cost)) {
+            //check if $errandlr_cost is a string 
+            if (is_string($errandlr_cost)) {
+                //convert to float
+                $errandlr_cost = intval($errandlr_cost);
+            }
 
-        $api = wc_Errandlr_delivery()->get_api();
-        $args = [
-            "dropoffLocations" => json_encode([
-                [
-                    "id" => $delivery_address,
-                    "label" => $delivery_address
-                ]
-            ]),
-            "optimize" => 'false',
-            "pickupLocation" => json_encode(
-                [
-                    "id" => $pickup_address,
-                    "label" => $pickup_address
-                ]
-            ),
-        ];
-        $parser = 'dropoffLocations=' . $args['dropoffLocations'] . '&optimize=' . $args['optimize'] . '&pickupLocation=' . $args['pickupLocation'];
-        $costData = $api->calculate_pricing($parser);
-        file_put_contents(__DIR__ . '/costData.txt', print_r($costData, true));
-        $cost = wc_format_decimal($costData["estimate"]);
-        $metadata = array(
-            'errandlr_cost'    => $cost,
-            'routes' => $costData['routes']["mapUrl"],
-            'geoId' => $costData["geoId"],
-            'dropoffLocationsID' => $costData["routes"]["dropoffLocations"][0]["order"],
-        );
+            //title
+            if ($errandlr_shipping_info['premium'] == "true") {
+                $this->title = 'Premium Errandlr Delivery';
+            } else {
+                $this->title = 'Economy Errandlr Delivery';
+            }
+
+            //check if $errandlr_shipping_info is not empty
+            if (!empty($errandlr_shipping_info)) {
+                //add rate
+                $this->add_rate(array(
+                    'id'        => $this->id . $this->instance_id,
+                    'label'     => $this->title,
+                    'cost'      => $errandlr_cost,
+                    'meta_data' => [
+                        'routes' => $errandlr_shipping_info['routes'],
+                        'geoId' => $errandlr_shipping_info['geoId'],
+                        'dropoffLocationsID' => $errandlr_shipping_info['dropoffLocationsID'],
+                        'premium' => $errandlr_shipping_info['premium'],
+                        'currency' => $errandlr_shipping_info['currency'],
+                        'economy_cost' => $errandlr_shipping_info['economy_cost'],
+                        'premium_cost' => $errandlr_shipping_info['premium_cost'],
+                    ],
+                ));
+                return;
+            }
+        }
+
         //add rate
         $this->add_rate(array(
             'id'        => $this->id . $this->instance_id,
             'label'     => $this->title,
-            'cost'      => $cost,
-            'meta_data' => $metadata,
+            'cost'      => 0,
+            'meta_data' => [],
         ));
     }
 }

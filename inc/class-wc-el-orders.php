@@ -58,7 +58,7 @@ class WC_Errandlr_Delivery_Orders
 
         <table id="wc_Errandlr_delivery_order_meta_box">
             <tr>
-                <th><strong><?php esc_html_e('Unique Refrence ID') ?> : </strong></th>
+                <th><strong><?php esc_html_e('Tracking ID') ?> : </strong></th>
                 <td><?php echo esc_html((empty($errandlr_reference)) ? __('N/A') : $errandlr_reference); ?></td>
             </tr>
 
@@ -75,7 +75,7 @@ class WC_Errandlr_Delivery_Orders
             jQuery(document).ready(function($) {
                 $.get("<?php echo admin_url('admin-ajax.php'); ?>", {
                     action: 'errandlr_delivery_get_status',
-                    reference: '<?php echo $errandlr_reference; ?>'
+                    reference: '<?php echo esc_html($errandlr_reference); ?>'
                 }, function(data) {
                     $('#errand_status').html(data.status);
                 });

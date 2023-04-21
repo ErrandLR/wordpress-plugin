@@ -1,0 +1,48 @@
+.errandlr_premium_delivery {
+  padding: 0px;
+  margin: 0px;
+  font-size: 13px;
+  background: #d3d3d34d;
+  padding-left: 10px;
+  padding-right: 5px;
+  width: 100%;
+  max-width: 162px;
+  border-radius: 3px;
+  line-height: 16px;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.errandlr_premium_delivery:hover {
+  background: #9895956e;
+}
+
+.errandlr_economy_delivery {
+  padding: 0px;
+  margin: 0px;
+  font-size: 13px;
+  background: #d3d3d34d;
+  padding-left: 10px;
+  padding-right: 5px;
+  width: 100%;
+  max-width: 162px;
+  border-radius: 3px;
+  line-height: 16px;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  border: 1px solid black;
+  margin-top: 7px;
+  cursor: pointer;
+  transition: 0.5s;
+}
+
+.errandlr_economy_delivery:hover {
+  background: #9895956e;
+}
+
+.errandlr_container_div {
+  margin-top: 5px;
+}
