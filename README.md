@@ -9,7 +9,8 @@ Requires PHP: 5.4 or higher
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Errandlr Delivery for WooCommerce
+== Description ==
+Errandlr Delivery Shipping Method for WooCommerce
 
 == What is Errandlr? ==
 Errandlr is a delivery service that can power the post-checkout delivery experience for businesses launching online and need an automated logistics solution.
@@ -19,6 +20,21 @@ Using Errandlr can help businesses grow by adding delivery on checkout, providin
 
 == How does Errandlr work? ==
 Errandlr provides a simple and efficient delivery service for businesses. After checkout, Errandlr handles the delivery process, allowing businesses to focus on other aspects of their operations. Customers can monitor their deliveries on the go, ensuring transparency and peace of mind. With affordable pricing and excellent customer support, Errandlr offers a reliable and efficient delivery solution for businesses in Lagos.
+
+== Installation ==
+
+1. Install and activate the Errandlr plugin for WooCommerce.
+2. Go to WooCommerce > Settings > Shipping.
+3. Click on the "Add Shipping Method" button and select "Errandlr" from the dropdown menu.
+4. Enter your Errandlr API credentials in the settings page.
+5. Configure the settings according to your needs, such as the delivery zone, delivery rates, and shipping options.
+6. Save the settings and start using Errandlr as a shipping option for your WooCommerce store.
+
+### Video Tutorial
+
+[youtube https://www.youtube.com/watch?v=KRyxKd0ByhU]
+
+Once integrated, customers will be able to select Errandlr as a shipping option during checkout, and the plugin will automatically calculate the delivery rates and schedule the delivery with Errandlr. You can also monitor deliveries and track shipments using the Errandlr dashboard.
 
 == Frequently Asked Questions ==
 
@@ -57,21 +73,6 @@ Errandlr ensures the security of delivered items by using a secure and reliable 
 
 = What happens if an item is lost or damaged during delivery? =
 If an item is lost or damaged during delivery, Errandlr offers limited liability coverage for the value of the item. Customers can contact Errandlr customer support to initiate a claim.
-
-== Installation ==
-
-1. Install and activate the Errandlr plugin for WooCommerce.
-2. Go to WooCommerce > Settings > Shipping.
-3. Click on the "Add Shipping Method" button and select "Errandlr" from the dropdown menu.
-4. Enter your Errandlr API credentials in the settings page.
-5. Configure the settings according to your needs, such as the delivery zone, delivery rates, and shipping options.
-6. Save the settings and start using Errandlr as a shipping option for your WooCommerce store.
-
-### Video Tutorial
-
-[youtube https://www.youtube.com/watch?v=KRyxKd0ByhU]
-
-Once integrated, customers will be able to select Errandlr as a shipping option during checkout, and the plugin will automatically calculate the delivery rates and schedule the delivery with Errandlr. You can also monitor deliveries and track shipments using the Errandlr dashboard.
 
 == Changelog ==
 
