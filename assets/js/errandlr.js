@@ -67,14 +67,36 @@ jQuery(document).ready(function ($) {
             }).format(premium_cost);
             //currency
             let currency = shipment_info.currency;
+            //get label
+            let label = parent.find("label");
+            //get label text
+            let label_text = label.text();
+            //has premium
+            let has_premium = false;
+            //has economy
+            let has_economy = false;
+            //check if label text has 'Premium delivery'
+            if (label_text.match(/Premium/g)) {
+              //  has_premium
+              has_premium = true;
+            }
+            //check if label text has 'Economy delivery'
+            if (label_text.match(/Economy/g)) {
+              //  has_economy
+              has_economy = true;
+            }
             //content
             let content = `
               <div class="errandlr_container_div">
-                  <p class="errandlr_premium_delivery" onclick="errandlrUpdatePrice(this, event)" data-premium="true">
-                      Premium delivery 2-4 hrs ${premium_cost}
+                  <p class="errandlr_premium_delivery ${
+                    has_premium ? "errandlr_active" : ""
+                  }" onclick="errandlrUpdatePrice(this, event)" data-premium="true">
+                      Premium delivery: <b>2-4 hrs ${premium_cost}</b>
                   </p>
-                  <p class="errandlr_economy_delivery" onclick="errandlrUpdatePrice(this, event)" data-premium="false">
-                      Economy delivery 1-5 days ${economy_cost}
+                  <p class="errandlr_economy_delivery ${
+                    has_economy ? "errandlr_active" : ""
+                  }" onclick="errandlrUpdatePrice(this, event)" data-premium="false">
+                      Economy delivery: <b>1-5 days ${economy_cost}</b>
                   </p>
               </div>
             `;
@@ -124,6 +146,28 @@ jQuery(document).ready(function ($) {
       if (parent.find(".errandlr_container_div").length > 0) {
         //replace .errandlr_container_div
         parent.find(".errandlr_container_div").replaceWith(content);
+        //get label
+        let label = parent.find("label");
+        //get label text
+        let label_text = label.text();
+        //check if label text has 'Premium delivery'
+        if (label_text.match(/Premium/g)) {
+          //remove errandlr_active
+          $(
+            ".errandlr_economy_delivery, .errandlr_premium_delivery"
+          ).removeClass("errandlr_active");
+          //add errandlr_active
+          $(".errandlr_premium_delivery").addClass("errandlr_active");
+        }
+        //check if label text has 'Economy delivery'
+        if (label_text.match(/Economy/g)) {
+          //remove errandlr_active
+          $(
+            ".errandlr_economy_delivery, .errandlr_premium_delivery"
+          ).removeClass("errandlr_active");
+          //add errandlr_active
+          $(".errandlr_economy_delivery").addClass("errandlr_active");
+        }
       } else {
         //append to li
         parent.append(content);
@@ -136,10 +180,16 @@ jQuery(document).ready(function ($) {
 
   //on focus out on any input field or select box in the checkout form 'checkout woocommerce-checkout'
   $("body").on(
-    "focusout",
+    "focusout, change, blur",
     "form.checkout #billing_address_1, form.checkout #billing_address_2, form.checkout #billing_city, form.checkout #billing_state, form.checkout #billing_postcode, form.checkout #billing_country, form.checkout #billing_phone, form.checkout #billing_email",
     errandlrGetshipment
   );
+
+  //on update checkout form
+  $("body").on("updated_checkout", function () {
+    //reload  errandlrGetshipment();
+    errandlrGetshipment();
+  });
 
   //init
   errandlrGetshipment();

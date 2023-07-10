@@ -196,6 +196,9 @@ class WC_Errandlr_Delivery
         //parse form data
         parse_str($data, $form_data);
 
+        //clear previous selected shipment amount
+        $this->clearPreviousSelected();
+
         //calculate_shipment
         $calculate_shipment = $this->calculate_shipment($form_data);
         if ($calculate_shipment === false) {
@@ -210,6 +213,29 @@ class WC_Errandlr_Delivery
             'message' => 'Shipment calculated successfully',
             'shipment_info' => $calculate_shipment
         ]);
+    }
+
+    /**
+     * Clear previous selected shipment amount
+     * @return bool
+     */
+    public function clearPreviousSelected()
+    {
+        //check if session is started
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        //remove session
+        if (isset($_SESSION['errandlr_shipping_info'])) {
+            unset($_SESSION['errandlr_shipping_info']);
+        }
+
+        //remove session
+        if (isset($_SESSION['errandlr_shipping_cost'])) {
+            unset($_SESSION['errandlr_shipping_cost']);
+        }
+
+        return true;
     }
 
     //errandlr_africa_save_shipping_info
