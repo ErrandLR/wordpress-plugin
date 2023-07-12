@@ -183,7 +183,7 @@ jQuery(document).ready(function ($) {
   //on focus out on any input field or select box in the checkout form 'checkout woocommerce-checkout'
   $("body").on(
     "focusout, change, blur",
-    "form.checkout #billing_address_1, form.checkout #billing_address_2, form.checkout #billing_city, form.checkout #billing_state, form.checkout #billing_postcode, form.checkout #billing_country, form.checkout #billing_phone, form.checkout #billing_email",
+    "form #billing_address_1, form #billing_address_2, form #billing_city, form #billing_state, form #billing_postcode, form #billing_country, form #billing_phone, form #billing_email",
     errandlrGetshipment
   );
 
