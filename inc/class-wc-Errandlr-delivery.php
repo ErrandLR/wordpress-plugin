@@ -348,7 +348,13 @@ class WC_Errandlr_Delivery
         $delivery_country_code = $form_data['billing_country'];
         $delivery_state_code = $form_data['billing_state'];
 
-        $delivery_state = WC()->countries->get_states($delivery_country_code)[$delivery_state_code];
+        //check if delivery state code match lagos or Lagos
+        if (strpos(strtolower($delivery_state_code), 'lagos') === false) {
+            $delivery_state = WC()->countries->get_states($delivery_country_code)[$delivery_state_code];
+        } else {
+            $delivery_state = $delivery_state_code;
+        }
+
         $delivery_country = WC()->countries->get_countries()[$delivery_country_code];
 
         //if $form_data['billing_address_1'] is empty return false
@@ -360,7 +366,8 @@ class WC_Errandlr_Delivery
         //full address 
         $delivery_address = $form_data['billing_address_1'] . ', ' . $form_data['billing_city'] . ', ' . $delivery_state . ', ' . $delivery_country;
 
-        if ('Lagos' !== $delivery_state) {
+        //check if delivery state match string Lagos or lagos
+        if (strpos(strtolower($delivery_state), 'lagos') === false) {
             wc_add_notice('Errandlr Delivery only available within Lagos', 'notice');
             return false;
         }

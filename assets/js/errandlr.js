@@ -4,13 +4,15 @@ jQuery(document).ready(function ($) {
     let image = $(".Errandlr-delivery-logo");
     //get parent
     let parent = image.parent().parent();
+    //get the parent form on checkout
+    let formWoo = $("#customer_details").closest("form");
     //if the checkout form is valid
-    if ($("form.checkout").length > 0) {
+    if (formWoo.length > 0) {
       //get the form data
       var data = {
         action: "errandlr_validate_checkout",
         nonce: errandlr_delivery.nonce,
-        data: $("form.checkout").serialize()
+        data: formWoo.serialize()
       };
       //log
       $.ajax({
@@ -20,7 +22,7 @@ jQuery(document).ready(function ($) {
         dataType: "json",
         beforeSend: function () {
           //block the checkout form
-          $("form.checkout").block({
+          formWoo.block({
             message: null,
             overlayCSS: {
               background: "#fff",
@@ -35,7 +37,7 @@ jQuery(document).ready(function ($) {
           //clear local storage
           localStorage.removeItem("errandlr_div_cost");
           //unblock the checkout form
-          $("form.checkout").unblock();
+          formWoo.unblock();
           //check if response code is 200
           if (response.code == 200) {
             //get shipment_info
@@ -114,7 +116,7 @@ jQuery(document).ready(function ($) {
         },
         error: function (response) {
           //unblock the checkout form
-          $("form.checkout").unblock();
+          formWoo.unblock();
           //log the error
           console.log(response);
         }
