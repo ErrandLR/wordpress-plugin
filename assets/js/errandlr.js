@@ -178,7 +178,7 @@ jQuery(document).ready(function ($) {
   };
 
   //set interval
-  setInterval(updateContentStorage, 1000);
+  // setInterval(updateContentStorage, 1000);
 
   //on focus out on any input field or select box in the checkout form 'checkout woocommerce-checkout'
   $("body").on(

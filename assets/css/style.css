@@ -45,5 +45,5 @@
 }
 
 .errandlr_active {
-  background: beige !important;
+  border: 2px solid black !important;
 }
