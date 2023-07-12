@@ -6,8 +6,8 @@
  * Author: Errandlr
  * Author URI: https://errandlr.com/
  * Description: Errandlr Delivery for WooCommerce
- * Version: 1.1.1
- * License: 1.1.1
+ * Version: 1.1.4
+ * License: 1.1.4
  * License URL: http://www.gnu.org/licenses/gpl-2.0.txt
  * text-domain: errandlr-delivery-for-woocommerce
  */

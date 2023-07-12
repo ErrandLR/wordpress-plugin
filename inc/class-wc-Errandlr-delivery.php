@@ -197,7 +197,7 @@ class WC_Errandlr_Delivery
         parse_str($data, $form_data);
 
         //clear previous selected shipment amount
-        $this->clearPreviousSelected();
+        // $this->clearPreviousSelected();
 
         //calculate_shipment
         $calculate_shipment = $this->calculate_shipment($form_data);
@@ -465,6 +465,7 @@ class WC_Errandlr_Delivery
                 'routes' => $costData['routes']["mapUrl"],
                 'geoId' => $costData["geoId"],
                 'dropoffLocationsID' => $costData["routes"]["dropoffLocations"][0]["order"],
+                'costData' => $costData,
             );
             //return
             return $metadata;
