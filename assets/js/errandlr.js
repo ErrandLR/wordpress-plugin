@@ -22,13 +22,13 @@ jQuery(document).ready(function ($) {
         dataType: "json",
         beforeSend: function () {
           //block the checkout form
-          // formWoo.block({
-          //   message: null,
-          //   overlayCSS: {
-          //     background: "#fff",
-          //     opacity: 0.6
-          //   }
-          // });
+          parent.block({
+            message: null,
+            overlayCSS: {
+              background: "#fff",
+              opacity: 0.6
+            }
+          });
         },
         success: function (response) {
           //clear session storage
@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
           //clear local storage
           localStorage.removeItem("errandlr_div_cost");
           //unblock the checkout form
-          // formWoo.unblock();
+          parent.unblock();
           //check if response code is 200
           if (response.code == 200) {
             //get shipment_info
