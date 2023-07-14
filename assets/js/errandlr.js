@@ -22,14 +22,13 @@ jQuery(document).ready(function ($) {
         dataType: "json",
         beforeSend: function () {
           //block the checkout form
-          formWoo.block({
-            message: null,
-            overlayCSS: {
-              background: "#fff",
-
-              opacity: 0.6
-            }
-          });
+          // formWoo.block({
+          //   message: null,
+          //   overlayCSS: {
+          //     background: "#fff",
+          //     opacity: 0.6
+          //   }
+          // });
         },
         success: function (response) {
           //clear session storage
@@ -37,7 +36,7 @@ jQuery(document).ready(function ($) {
           //clear local storage
           localStorage.removeItem("errandlr_div_cost");
           //unblock the checkout form
-          formWoo.unblock();
+          // formWoo.unblock();
           //check if response code is 200
           if (response.code == 200) {
             //get shipment_info
@@ -138,6 +137,19 @@ jQuery(document).ready(function ($) {
     }
     //get errandlr
     let image = $(".Errandlr-delivery-logo");
+    //check if image is found
+    if (!image.length) {
+      return;
+    }
+    //check if woocommerce-info has test that match 'Errandlr Delivery'
+    if (
+      $(".woocommerce-info")
+        .text()
+        .match(/Errandlr Delivery/g)
+    ) {
+      //remove notice
+      $(".woocommerce-info").parent().remove();
+    }
     //get parent
     let parent = image.parent().parent();
     //check if local storage has errandlr_div_cost
@@ -178,7 +190,7 @@ jQuery(document).ready(function ($) {
   };
 
   //set interval
-  // setInterval(updateContentStorage, 1000);
+  setInterval(updateContentStorage, 1000);
 
   //on focus out on any input field or select box in the checkout form 'checkout woocommerce-checkout'
   $("body").on(
