@@ -4,7 +4,7 @@ Donate link: https://errandlr.com/
 Tags: Errandlr delivery, Errandlr shipping, Errandlr plugin, Errandlr WordPress integration, Errandlr API, Delivery management, WooCommerce integration, eCommerce delivery, Post-checkout delivery, Real-time tracking, Ecommerce, Sales
 Requires at least: 3.0.0
 Tested up to: 6.2
-Stable tag: 1.1.8
+Stable tag: 1.1.9
 Requires PHP: 5.4 or higher
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -75,6 +75,10 @@ Errandlr ensures the security of delivered items by using a secure and reliable 
 If an item is lost or damaged during delivery, Errandlr offers limited liability coverage for the value of the item. Customers can contact Errandlr customer support to initiate a claim.
 
 == Changelog ==
+
+= 1.1.9 =
+
+- Fix bugs
 
 = 1.1.8 =
 
