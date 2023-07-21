@@ -124,6 +124,41 @@ class WC_Errandlr_Delivery
         add_action('woocommerce_add_to_cart', array($this, 'remove_wc_session_on_cart_action'), 10, 6);
         //wc new order
         add_action('woocommerce_checkout_order_processed', array($this, 'wc_new_order'), 10, 3);
+        //ajax errandlr_clear_selected_shipment
+        add_action('wp_ajax_errandlr_clear_selected_shipment', array($this, 'errandlr_clear_selected_shipment'));
+        add_action('wp_ajax_nopriv_errandlr_clear_selected_shipment', array($this, 'errandlr_clear_selected_shipment'));
+    }
+
+    /**
+     * errandlr_clear_selected_shipment
+     */
+    public function errandlr_clear_selected_shipment()
+    {
+        try {
+            //nonce
+            $nonce = sanitize_text_field($_GET['nonce']);
+            //verify nonce
+            if (!wp_verify_nonce($nonce, 'errandlr_delivery_nonce')) {
+                //return
+                wp_send_json([
+                    'code' => 501,
+                    'message' => 'Error: Invalid nonce',
+                ]);
+            }
+            //clear selected shipment
+            $this->clearPreviousSelected();
+            //return
+            wp_send_json([
+                'code' => 200,
+                'message' => 'Successfully cleared selected shipment',
+            ]);
+        } catch (\Exception $e) {
+            //return
+            wp_send_json([
+                'code' => 501,
+                'message' => "Error: " . $e->getMessage(),
+            ]);
+        }
     }
 
     //wc_new_order

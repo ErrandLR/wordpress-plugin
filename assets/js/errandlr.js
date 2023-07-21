@@ -1,4 +1,59 @@
 jQuery(document).ready(function ($) {
+  //trigger debounce event
+  let errandlrDebounce = (element) => {
+    var typingTimer; //timer identifier
+    var doneTypingInterval = 1000; //time in ms (5 seconds)
+
+    //on keyup, start the countdown
+    $(element).keyup(function () {
+      clearTimeout(typingTimer);
+      if ($(element).val()) {
+        typingTimer = setTimeout(errandlrGetshipment, doneTypingInterval);
+      }
+    });
+  };
+
+  //clear errand selected shipment
+  let clearErrand = () => {
+    //clear local storage errandlr_shipment_info
+    localStorage.removeItem("errandlr_shipment_info");
+    //check if element exist
+    if ($(".errandlr_container_div").length) {
+      //clear .errandlr_container_div
+      $(".errandlr_container_div").remove();
+    }
+    //ajax
+    $.ajax({
+      type: "GET",
+      url: errandlr_delivery.ajax_url,
+      data: {
+        action: "errandlr_clear_selected_shipment",
+        nonce: errandlr_delivery.nonce
+      },
+      dataType: "json",
+      success: function (response) {
+        //check if response is 200
+        if (response.code == 200) {
+          //get errandlr
+          let image = $(".Errandlr-delivery-logo");
+          //get parent
+          let parent = image.parent().parent();
+          //find .woocommerce-Price-amount amount
+          let amount = parent.find(".woocommerce-Price-amount.amount");
+          //check if it exist
+          if (amount.length > 0) {
+            //update woocommerce
+            $(document.body).trigger("update_checkout");
+          }
+        } else {
+          console.log(response);
+        }
+      }
+    });
+  };
+
+  clearErrand();
+
   let errandlrGetshipment = function () {
     //get errandlr
     let image = $(".Errandlr-delivery-logo");
@@ -14,6 +69,7 @@ jQuery(document).ready(function ($) {
         nonce: errandlr_delivery.nonce,
         data: formWoo.serialize()
       };
+      clearErrand();
       //log
       $.ajax({
         type: "POST",
@@ -182,6 +238,14 @@ jQuery(document).ready(function ($) {
           //add errandlr_active
           $(".errandlr_economy_delivery").addClass("errandlr_active");
         }
+
+        //check if label does not match any of the above
+        if (!label_text.match(/Economy/g) && !label_text.match(/Premium/g)) {
+          //remove errandlr_active
+          $(
+            ".errandlr_economy_delivery, .errandlr_premium_delivery"
+          ).removeClass("errandlr_active");
+        }
       } else {
         //append to li
         parent.append(content);
@@ -192,21 +256,25 @@ jQuery(document).ready(function ($) {
   //set interval
   setInterval(updateContentStorage, 1000);
 
-  //on focus out on any input field or select box in the checkout form 'checkout woocommerce-checkout'
   $("body").on(
-    "focusout, change, blur",
-    "form #billing_address_1, form #billing_address_2, form #billing_city, form #billing_state, form #billing_postcode, form #billing_country, form #billing_phone, form #billing_email",
+    "change",
+    "form #billing_state, form #billing_country",
     errandlrGetshipment
   );
 
-  //on update checkout form
-  $("body").on("updated_checkout", function () {
-    //reload  errandlrGetshipment();
-    errandlrGetshipment();
-  });
+  //errandlrDebounce
+  errandlrDebounce("form #billing_address_1");
+  errandlrDebounce("form #billing_address_2");
+  errandlrDebounce("form #billing_city");
 
   //init
   errandlrGetshipment();
+
+  //on update checkout
+  $(document.body).on("updated_checkout", function () {
+    //init
+    // errandlrGetshipment();
+  });
 });
 
 //errandlrUpdatePrice
