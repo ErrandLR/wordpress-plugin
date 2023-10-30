@@ -250,6 +250,12 @@ jQuery(document).ready(function ($) {
         //append to li
         parent.append(content);
       }
+
+      //check if parent has element .woocommerce-Price-amount
+      if (!parent.find(".woocommerce-Price-amount").length) {
+        //trigger click on the premium delivery
+        $(".errandlr_premium_delivery").trigger("click");
+      }
     }
   };
 
